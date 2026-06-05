@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Delta-PCT - Reporte Detallado</title>
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M42,25 h16 v16 h16 v16 h-16 v16 h-16 v-16 h-16 v-16 h16 z' fill='rgba(0, 240, 255, 0.15)'/><polygon points='50,10 90,80 10,80' fill='none' stroke='%2300f0ff' stroke-width='6' stroke-linejoin='round'/><polyline points='0,60 25,60 35,30 50,90 65,45 75,60 100,60' fill='none' stroke='%2339ff14' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        /* Estilos optimizados para la visualización de Tablas HUD */
+        .table-hud {
+            --bs-table-bg: transparent;
+            font-family: var(--font-hud);
+        }
+
+        .table-hud th {
+            color: var(--neon-cyan);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            font-weight: 400;
+            font-size: 0.75rem;
+        }
+
+        /* Forzado de color blanco puro para las descripciones/parámetros de las tablas */
+        .table-hud td:first-child {
+            color: #ffffff !important;
+            font-weight: 500;
+        }
+
+        .table-hud td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .text-neon-cyan {
+            color: var(--neon-cyan);
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: #030a16 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hud-grid" aria-hidden="true"></div>
+    <div class="hud-bg-shapes" aria-hidden="true">
+        <svg viewBox="0 0 800 800" width="100%" height="100%">
+            <circle cx="400" cy="400" r="300" fill="none" stroke="rgba(0, 240, 255, 0.05)" stroke-width="1" />
+            <path d="M280,300 L310,300" stroke="rgba(0, 240, 255, 0.1)" stroke-width="1" />
+        </svg>
+    </div>
+
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+            <button id="backToPhase2" class="btn btn-outline-hud d-flex align-items-center gap-2">
+                <i data-lucide="arrow-left" style="width:18px;height:18px;"></i> Volver a Edición
+            </button>
+            <div class="d-flex gap-2">
+                <button id="goToDashboardBtn" class="btn btn-outline-hud d-flex align-items-center gap-2">
+                    <i data-lucide="layout-dashboard" style="width:18px;height:18px;"></i> Ir a Panel General
+                </button>
+                <button id="exportPdfBtn" class="btn btn-solid-cyan d-flex align-items-center gap-2 px-4 shadow-lg">
+                    <i data-lucide="download-cloud" style="width:18px;height:18px;"></i> Exportar Expediente PDF
+                </button>
+            </div>
+        </div>
+
+        <div id="pdfExportZone" class="glass-card p-4 p-md-5 border border-info border-opacity-25"
+            style="background: #030a16;">
+
+            <header
+                class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-info border-opacity-50">
+                <div>
+                    <h1 class="app-title h3 mb-1 text-white d-flex align-items-center gap-2">
+                        <i data-lucide="activity" class="text-info"></i> CardioPulse / Delta-PCT
+                    </h1>
+                    <span class="subtitle-hud text-info">Análisis de Mortalidad y Perfusión Tisular</span>
+                </div>
+                <div class="text-end">
+                    <div class="text-white-50" style="font-family: var(--font-hud); font-size: 0.8rem;">FOLIO PACIENTE:
+                        <span id="reportId" class="text-white fw-bold"></span>
+                    </div>
+                    <div class="text-white-50" style="font-family: var(--font-hud); font-size: 0.8rem;">FECHA: <span
+                            id="reportDate" class="text-white"></span></div>
+                </div>
+            </header>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+
+                    <div class="p-3 rounded mb-3 shadow-sm"
+                        style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(0, 240, 255, 0.1);">
+                        <h6 class="form-label-hud text-white mb-3 d-flex align-items-center gap-2">
+                            <i data-lucide="list" class="text-info" style="width:16px;"></i> Detalle de Parámetros (Fase
+                            1)
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-hud table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Variable Clínica</th>
+                                        <th>Valor Ingresado</th>
+                                        <th class="text-center">Impacto (Pts)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="phase1TableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded mb-4 shadow-sm"
+                        style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(57, 255, 20, 0.15);">
+                        <h6 class="form-label-hud text-white mb-3 d-flex align-items-center gap-2">
+                            <i data-lucide="microscope" class="text-neon-green" style="width:16px;"></i> Laboratorio y
+                            Gasometría (Fase 2)
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-hud table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="color: var(--neon-green);">Biomarcador</th>
+                                        <th style="color: var(--neon-green);">Valor Registrado</th>
+                                        <th class="text-center" style="color: var(--neon-green);">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="phase2TableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6">
+
+                    <div class="p-3 rounded mb-3"
+                        style="background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.1);">
+                        <div class="row g-2 text-center" style="font-family: var(--font-hud);">
+                            <div class="col-3">
+                                <div class="p-2 border border-secondary border-opacity-25 rounded">
+                                    <div class="text-white-50" style="font-size: 0.65rem;">SCORE F1</div>
+                                    <div id="repScore" class="fs-5 text-info fw-bold">-</div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="p-2 border border-secondary border-opacity-25 rounded">
+                                    <div class="text-white-50" style="font-size: 0.65rem;">LACTATO</div>
+                                    <div id="repLactato" class="fs-5 fw-bold">-</div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="p-2 border border-secondary border-opacity-25 rounded">
+                                    <div class="text-white-50" style="font-size: 0.65rem;">Δ pCO₂</div>
+                                    <div id="repDeltaCO2" class="fs-5 text-white fw-bold">-</div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="p-2 border border-secondary border-opacity-25 rounded">
+                                    <div class="text-white-50" style="font-size: 0.65rem;">KIRBY</div>
+                                    <div id="repPafi" class="fs-5 text-white fw-bold">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded mb-3"
+                        style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);">
+                        <h6 class="text-white-50 mb-3" style="font-size:0.8rem;"><i data-lucide="bar-chart-2"
+                                class="me-1"></i> Tendencia Metabólica vs Límites</h6>
+                        <div style="position: relative; height: 160px; width: 100%;">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 rounded h-100"
+                                style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);">
+                                <h6 class="text-white-50 mb-3 text-center" style="font-size:0.8rem;">Balance Ácido-Base
+                                </h6>
+                                <div
+                                    style="position: relative; height: 130px; width: 100%; display: flex; justify-content: center;">
+                                    <canvas id="doughnutChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 rounded h-100"
+                                style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);">
+                                <h6 class="text-white-50 mb-3 text-center" style="font-size:0.8rem;">Huella
+                                    Multiorgánica</h6>
+                                <div
+                                    style="position: relative; height: 130px; width: 100%; display: flex; justify-content: center;">
+                                    <canvas id="radarChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-top border-info border-opacity-50">
+                <h4 class="text-white mb-4 d-flex align-items-center gap-2" style="font-family: var(--font-hud);">
+                    <i data-lucide="file-text" style="width:24px; color: var(--neon-cyan);"></i> EXPEDIENTE CLÍNICO:
+                    REPORTE PRONÓSTICO
+                </h4>
+
+                <div id="formalReportText" class="text-white-50"
+                    style="font-size: 0.85rem; line-height: 1.8; text-align: justify; font-family: var(--font-sans);">
+                </div>
+
+                <div class="mt-5 pt-5 text-center">
+                    <div
+                        style="width: 300px; margin: 0 auto; border-top: 1px solid rgba(0, 240, 255, 0.4); padding-top: 10px;">
+                        <strong class="text-white d-block" style="font-size: 1rem;">Dr. Rajiv Joffre Palma</strong>
+                        <span class="text-white-50 d-block" style="font-size: 0.8rem;">Médico Tratante / Cirujano y
+                            Partero</span>
+                        <span class="text-info d-block mt-2"
+                            style="font-size: 0.65rem; font-family: var(--font-hud);">SISTEMA DELTA-PCT
+                            AUTORIZADO</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="js/delta-report.js"></script>
+</body>
+
+</html>
