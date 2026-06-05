@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Delta-PCT - Dashboard Global</title>
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M42,25 h16 v16 h16 v16 h-16 v-16 h-16 v-16 h16 z' fill='rgba(0, 240, 255, 0.15)'/><polygon points='50,10 90,80 10,80' fill='none' stroke='%2300f0ff' stroke-width='6' stroke-linejoin='round'/><polyline points='0,60 25,60 35,30 50,90 65,45 75,60 100,60' fill='none' stroke='%2339ff14' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        .table-hud {
+            --bs-table-bg: transparent;
+            font-family: var(--font-hud);
+        }
+
+        .table-hud th {
+            color: var(--neon-cyan);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            font-weight: 400;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .table-hud td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            font-size: 0.8rem;
+            color: #ffffff;
+        }
+
+        .btn-crud {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-crud.edit:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-crud.delete:hover {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+            box-shadow: 0 0 10px rgba(255, 59, 48, 0.3);
+        }
+
+        .dropdown-menu.glass-card {
+            background: rgba(3, 10, 22, 0.95) !important;
+            border: 1px solid var(--neon-cyan) !important;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .dropdown-item.hud-item {
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .dropdown-item.hud-item:hover {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--neon-cyan) !important;
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dropdown position-fixed top-0 end-0 m-3 m-md-4" style="z-index: 9999;">
+        <button class="btn btn-outline-hud dropdown-toggle d-flex align-items-center gap-2" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false"
+            style="background: rgba(3,10,22,0.8); backdrop-filter: blur(5px);">
+            <i data-lucide="command" style="width:18px;height:18px;"></i> Sistema
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end glass-card p-2 mt-2">
+            <li><a class="dropdown-item text-white-50 form-label-hud py-2 hud-item" href="delta1.html"><i
+                        data-lucide="user-plus" class="me-2 text-info" style="width:16px;"></i> Nuevo Paciente (F1)</a>
+            </li>
+            <li>
+                <hr class="dropdown-divider border-info opacity-25">
+            </li>
+            <li><a class="dropdown-item text-white-50 form-label-hud py-2 hud-item" href="dashboard.html"><i
+                        data-lucide="database" class="me-2 text-neon-green" style="width:16px;"></i> Base de Datos
+                    Global</a></li>
+        </ul>
+    </div>
+
+    <div class="hud-grid" aria-hidden="true"></div>
+
+    <div class="container-fluid py-4 px-md-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="app-title h3 mb-1 text-white d-flex align-items-center gap-2">
+                    <i data-lucide="database" class="text-info pulse-indicator border-0" style="width: 24px;"></i> Base
+                    de Datos Clínica
+                </h1>
+                <span class="subtitle-hud text-info">Centro de Comando Relacional</span>
+            </div>
+            <div class="d-flex gap-2">
+                <button id="backToAppBtn" class="btn btn-outline-hud d-flex align-items-center gap-2"><i
+                        data-lucide="home" style="width:18px;height:18px;"></i> Volver</button>
+                <button id="syncDataBtn" class="btn btn-solid-cyan d-flex align-items-center gap-2 shadow-lg"><i
+                        data-lucide="refresh-cw" style="width:18px;height:18px;"></i> Sincronizar</button>
+
+                <button id="exportExcelBtn" class="btn btn-success d-flex align-items-center gap-2 shadow-lg"
+                    style="background: #00b84c; border-color: #00b84c;">
+                    <i data-lucide="file-spreadsheet" style="width:18px;height:18px;"></i> Respaldar Excel
+                </button>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="glass-card p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50" style="font-family: var(--font-hud); font-size: 0.7rem;">TOTAL
+                            PACIENTES</div>
+                        <div class="fs-3 fw-bold text-white" id="kpiTotal">0</div>
+                    </div><i data-lucide="users" class="text-info" style="width: 32px; height: 32px; opacity: 0.5;"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="glass-card p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50" style="font-family: var(--font-hud); font-size: 0.7rem;">ALTO RIESGO
+                        </div>
+                        <div class="fs-3 fw-bold text-danger" id="kpiRiesgo">0</div>
+                    </div><i data-lucide="alert-triangle" class="text-danger"
+                        style="width: 32px; height: 32px; opacity: 0.5;"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="glass-card p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50" style="font-family: var(--font-hud); font-size: 0.7rem;">CASOS DE
+                            SEPSIS</div>
+                        <div class="fs-3 fw-bold text-warning" id="kpiSepsis">0</div>
+                    </div><i data-lucide="biohazard" class="text-warning"
+                        style="width: 32px; height: 32px; opacity: 0.5;"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="glass-card p-3 d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-white-50" style="font-family: var(--font-hud); font-size: 0.7rem;">
+                            HIPOPERFUSIÓN</div>
+                        <div class="fs-3 fw-bold text-neon-cyan" id="kpiLactato">0</div>
+                    </div><i data-lucide="droplet" class="text-info"
+                        style="width: 32px; height: 32px; opacity: 0.5;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100">
+                    <h6 class="form-label-hud text-white mb-3"><i data-lucide="pie-chart" class="me-2 text-info"
+                            style="width:16px;"></i>Distribución de Riesgo</h6>
+                    <div style="position: relative; height: 200px; width: 100%;"><canvas id="globalRiskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100">
+                    <h6 class="form-label-hud text-white mb-3"><i data-lucide="bar-chart" class="me-2 text-info"
+                            style="width:16px;"></i>Casos por Edad</h6>
+                    <div style="position: relative; height: 200px; width: 100%;"><canvas id="globalAgeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="glass-card p-4 h-100">
+                    <h6 class="form-label-hud text-white mb-3"><i data-lucide="activity" class="me-2 text-neon-green"
+                            style="width:16px;"></i>Top Patologías Clínicas</h6>
+                    <div style="position: relative; height: 200px; width: 100%;"><canvas id="comorbChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card p-3 mb-4 d-flex justify-content-between align-items-center">
+            <span class="text-white-50" style="font-family: var(--font-hud); font-size: 0.8rem;"><i data-lucide="filter"
+                    class="text-info me-2" style="width: 14px;"></i>Filtro del Sistema en Tiempo Real</span>
+            <input type="text" class="form-control form-control-hud"
+                placeholder="Buscar folio, edad, patología en los registros..." id="searchInput" style="width: 300px;">
+        </div>
+
+        <div class="glass-card p-4 mb-4">
+            <h6 class="form-label-hud text-white mb-3"><i data-lucide="user" class="me-2 text-info"
+                    style="width:16px;"></i>TABLA 1: Datos Demográficos y Clínicos Basales (pacientes)</h6>
+            <div class="table-responsive">
+                <table class="table table-hud table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Folio</th>
+                            <th>Fecha Ingreso</th>
+                            <th>Edad</th>
+                            <th>Género</th>
+                            <th>Patologías Declaradas</th>
+                            <th>Foco Séptico</th>
+                            <th class="text-center">Score F1</th>
+                            <th class="text-center">Estrato Riesgo</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientsTableBody">
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-white-50">Cargando tabla de pacientes...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass-card p-4">
+            <h6 class="form-label-hud text-white mb-3"><i data-lucide="droplet" class="me-2 text-neon-cyan"
+                    style="width:16px;"></i>TABLA 2: Monitoreo de Parámetros Gasométricos y Perfusión (gasometrias)</h6>
+            <div class="table-responsive">
+                <table class="table table-hud table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Folio Paciente</th>
+                            <th class="text-center">Lactato (mmol/L)</th>
+                            <th class="text-center">pH Arterial</th>
+                            <th class="text-center">PaCO₂</th>
+                            <th class="text-center">HCO₃</th>
+                            <th class="text-center">PaO₂</th>
+                            <th class="text-center">PvCO₂</th>
+                            <th class="text-center">FiO₂</th>
+                            <th class="text-center">Δ pCO₂</th>
+                            <th class="text-center">Índice Kirby (PAFI)</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gasometriasTableBody">
+                        <tr>
+                            <td colspan="11" class="text-center py-4 text-white-50">Cargando parámetros de
+                                laboratorio...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="cyber-modal-overlay" id="deleteModal">
+        <div class="cyber-modal">
+            <i data-lucide="alert-triangle" class="text-danger mb-3" style="width: 48px; height: 48px;"></i>
+            <h4 class="text-white mb-2" style="font-family: var(--font-hud);">ADVERTENCIA RELACIONAL</h4>
+            <p class="text-white-50 mb-4" style="font-size: 0.85rem;">¿Estás seguro de eliminar este expediente? MySQL
+                borrará este paciente y su gasometría vinculada en cascada de forma automática.</p>
+            <div class="d-flex gap-2 justify-content-center">
+                <button class="btn btn-outline-hud" id="cancelDeleteBtn">Cancelar</button>
+                <button class="btn btn-danger-hud" id="confirmDeleteBtn">Confirmar Eliminación</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cyber-modal-overlay" id="editModal">
+        <div class="cyber-modal" style="max-width: 500px;">
+            <i data-lucide="edit" class="text-neon-cyan mb-3" style="width: 40px; height: 40px;"></i>
+            <h4 class="text-white mb-4" style="font-family: var(--font-hud);">EDITAR EXPEDIENTE</h4>
+            <div class="row text-start g-3 mb-4">
+                <div class="col-6"><label class="form-label-hud">Edad</label><input type="number" id="editEdad"
+                        class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Género</label><select id="editGenero"
+                        class="form-select form-select-hud">
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                    </select></div>
+                <div class="col-6"><label class="form-label-hud">Sepsis</label><input type="text" id="editSepsis"
+                        class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Lactato</label><input type="number" step="0.1"
+                        id="editLactato" class="form-control form-control-hud"></div>
+                <div class="col-12"><label class="form-label-hud">Estado Riesgo</label><select id="editEstado"
+                        class="form-select form-select-hud">
+                        <option value="Bajo">Bajo</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Crítico">Crítico</option>
+                    </select></div>
+            </div>
+            <div class="d-flex gap-2 justify-content-center">
+                <button class="btn btn-outline-hud" id="cancelEditBtn">Cancelar</button>
+                <button class="btn btn-solid-cyan" id="confirmEditBtn">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
