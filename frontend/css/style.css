@@ -343,6 +343,18 @@ body::after {
         max-width: 140px;
         padding: 8px 12px;
     }
+
+    .badge-status-hud {
+        position: fixed;
+        top: 0.5rem;
+        left: 0.5rem;
+        z-index: 10000;
+        width: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
+    }
 }
 
 .btn-danger-hud {
