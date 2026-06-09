@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pamDelta1Text = document.getElementById('pamDelta1Text');
 
     const camposIds = [
-        'genero', 'edad', 'comorbilidades', 'estadoMental', 'llenado',
+        'genero', 'edad', 'comorbilidades', 'estadoMental', 'llenadoCapilar',
         'frecuenciaCardiaca', 'temperatura',
         'frecuenciaRespiratoria', 'satO2', 'sepsis'
     ];
@@ -222,7 +222,7 @@ function calcularScore() {
     const comorbilidadesSelect = document.getElementById('comorbilidades')?.value || '';
     const comorbilidadesDetalle = document.getElementById('comorbilidadesDetalle')?.value.trim() || '';
     const estadoMental = document.getElementById('estadoMental')?.value || 'normal';
-    const llenado = document.getElementById('llenado')?.value || 'normal';
+    const llenado = document.getElementById('llenadoCapilar')?.value || 'normal';
     const fc = document.getElementById('frecuenciaCardiaca')?.value || 'normal';
     const temp = document.getElementById('temperatura')?.value || 'normal';
     const fr = document.getElementById('frecuenciaRespiratoria')?.value || 'normal';
@@ -243,7 +243,7 @@ function calcularScore() {
     switch (llenado) {
         case 'normal': break;
         case 'alerta': score += 1; break;
-        case 'Anormal': score += 2; break;
+        case 'Anormal': score += 1; break;
     }
 
     if (fc === 'baja' || fc === 'alta') score += 1;
