@@ -320,6 +320,31 @@ body::after {
     animation: glitchHover 0.3s ease-in-out;
 }
 
+.dropdown.position-fixed .dropdown-toggle {
+    min-width: 140px;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 4.5rem;
+    }
+
+    .dropdown.position-fixed {
+        top: 0.5rem !important;
+        right: 0.5rem !important;
+        margin: 0 !important;
+    }
+
+    .dropdown.position-fixed .dropdown-toggle {
+        max-width: 140px;
+        padding: 8px 12px;
+    }
+}
+
 .btn-danger-hud {
     background: rgba(255, 59, 48, 0.05);
     border: 1px solid rgba(255, 59, 48, 0.4);
