@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     sepsis: data.sepsis === 'si' ? (data.sepsisOrigen || 'Sí') : 'No',
                     score: data.score || 0,
                     lactato: parseFloat(data.lactato) || 0,
+                    procalcitonina: data.procalcitonina ? parseFloat(data.procalcitonina) : null,
                     estado: (data.score >= 6) ? 'Crítico' : (data.score >= 3 ? 'Medio' : 'Bajo'),
                     datosCompletos: data // Guarda todo el JSON completo en la última columna
                 };
@@ -74,27 +75,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 4. ENVÍA LOS DATOS A TU SERVIDOR NODE.JS
                     savePhase2Btn.innerHTML = '<i class="pulse-indicator me-2"></i> Guardando en Servidor...';
 
-                    await fetch('http://localhost:3000/api/pacientes', {
+                    const response = await fetch('http://localhost:3000/api/pacientes', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(payload)
                     });
+                    const result = await response.json();
+                    if (result.pacienteId) {
+                        localStorage.setItem('currentPacienteId', result.pacienteId);
+                    }
 
                     // 5. Animación de salida al terminar de guardar
                     document.body.classList.add('fade-out-page');
                     setTimeout(() => {
-                        window.location.href = 'delta-report.html';
+                        window.location.href = 'delta3.html';
                     }, 400);
 
                 } catch (error) {
                     console.error("Error al guardar en MySQL:", error);
-                    mostrarToast("⚠️ Advertencia: No se pudo conectar al servidor de base de datos, pero el reporte local fue generado.");
+                    mostrarToast("⚠️ Advertencia: No se pudo conectar al servidor de base de datos, pero puede continuar hacia Delta 3.");
 
-                    // Aún si falla el servidor, dejamos que el doc vea su PDF
+                    // Aún si falla el servidor, continuamos hacia Delta 3
                     setTimeout(() => {
-                        window.location.href = 'delta-report.html';
+                        window.location.href = 'delta3.html';
                     }, 1500);
                 }
             }

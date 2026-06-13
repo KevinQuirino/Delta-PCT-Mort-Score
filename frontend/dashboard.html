@@ -214,6 +214,7 @@
                             <th>Género</th>
                             <th>Patologías Declaradas</th>
                             <th>Foco Séptico</th>
+                            <th class="text-center">Procalcitonina (ng/mL)</th>
                             <th class="text-center">Score F1</th>
                             <th class="text-center">Estrato Riesgo</th>
                             <th class="text-end">Acciones</th>
@@ -221,7 +222,7 @@
                     </thead>
                     <tbody id="patientsTableBody">
                         <tr>
-                            <td colspan="9" class="text-center py-4 text-white-50">Cargando tabla de pacientes...</td>
+                            <td colspan="10" class="text-center py-4 text-white-50">Cargando tabla de pacientes...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -237,6 +238,7 @@
                         <tr>
                             <th>Folio Paciente</th>
                             <th class="text-center">Lactato (mmol/L)</th>
+                            <th class="text-center">Procalcitonina (ng/mL)</th>
                             <th class="text-center">pH Arterial</th>
                             <th class="text-center">PaCO₂</th>
                             <th class="text-center">HCO₃</th>
@@ -250,7 +252,7 @@
                     </thead>
                     <tbody id="gasometriasTableBody">
                         <tr>
-                            <td colspan="11" class="text-center py-4 text-white-50">Cargando parámetros de
+                            <td colspan="12" class="text-center py-4 text-white-50">Cargando parámetros de
                                 laboratorio...</td>
                         </tr>
                     </tbody>
@@ -277,17 +279,18 @@
             <i data-lucide="edit" class="text-neon-cyan mb-3" style="width: 40px; height: 40px;"></i>
             <h4 class="text-white mb-4" style="font-family: var(--font-hud);">EDITAR EXPEDIENTE</h4>
             <div class="row text-start g-3 mb-4">
-                <div class="col-6"><label class="form-label-hud">Edad</label><input type="number" id="editEdad"
-                        class="form-control form-control-hud"></div>
-                <div class="col-6"><label class="form-label-hud">Género</label><select id="editGenero"
-                        class="form-select form-select-hud">
+            <div class="col-6"><label class="form-label-hud">Edad</label><input type="number" id="editEdad"
+                class="form-control form-control-hud"></div>
+            <div class="col-6"><label class="form-label-hud">Género</label><select id="editGenero"
+                class="form-select form-select-hud">
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
                     </select></div>
                 <div class="col-6"><label class="form-label-hud">Sepsis</label><input type="text" id="editSepsis"
                         class="form-control form-control-hud"></div>
-                <div class="col-6"><label class="form-label-hud">Lactato</label><input type="number" step="0.1"
-                        id="editLactato" class="form-control form-control-hud"></div>
+            <div class="col-6"><label class="form-label-hud">Lactato</label><input type="number" step="0.1"
+                id="editLactato" class="form-control form-control-hud"></div>
+            <div class="col-6"><label class="form-label-hud">Procalcitonina (ng/mL)</label><input type="number" step="0.01" id="editPCT" class="form-control form-control-hud"></div>
                 <div class="col-12"><label class="form-label-hud">Estado Riesgo</label><select id="editEstado"
                         class="form-select form-select-hud">
                         <option value="Bajo">Bajo</option>

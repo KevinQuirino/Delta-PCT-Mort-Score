@@ -57,7 +57,8 @@ app.get('/api/pacientes', async (req, res) => {
                 g.pv_co2,
                 g.fi_o2,
                 g.delta_co2,
-                g.pafi
+                g.pafi,
+                g.procalcitonina
             FROM pacientes p 
             LEFT JOIN gasometrias g ON p.id = g.paciente_id 
             ORDER BY p.id DESC
@@ -113,15 +114,16 @@ app.post('/api/pacientes', async (req, res) => {
 
         // INSERCIÓN 2: Tabla de Gasometrias
         const queryGasometria = `
-            INSERT INTO gasometrias (paciente_id, lactato, ph_arterial, pa_co2, hco3, pa_o2, pv_co2, fi_o2, delta_co2, pafi) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO gasometrias (paciente_id, lactato, ph_arterial, pa_co2, hco3, pa_o2, pv_co2, fi_o2, delta_co2, pafi, procalcitonina) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
+        const procalcitonina = parseFloat(datosCompletos.procalcitonina) || null;
         await connection.execute(queryGasometria, [
-            nuevoPacienteId, lactato, ph, paco2, hco3, pao2, pvco2, fio2, deltaCO2, pafi
+            nuevoPacienteId, lactato, ph, paco2, hco3, pao2, pvco2, fio2, deltaCO2, pafi, procalcitonina
         ]);
 
         await connection.commit();
-        return res.status(201).json({ message: 'Paciente y gasometría registrados exitosamente' });
+        return res.status(201).json({ message: 'Paciente y gasometría registrados exitosamente', pacienteId: nuevoPacienteId });
 
     } catch (error) {
         await connection.rollback();
@@ -139,15 +141,15 @@ app.put('/api/pacientes/:id', async (req, res) => {
     const connection = await pool.getConnection();
     try {
         const { id } = req.params;
-        const { edad, genero, sepsis, lactato, estado } = req.body;
+        const { edad, genero, sepsis, lactato, estado, procalcitonina } = req.body;
 
         await connection.beginTransaction();
 
-        const queryPac = `UPDATE pacientes SET edad = ?, genero = ?, sepsis_origen = ?, estado_riesgo = ? WHERE id = ?`;
+        const queryPac = `UPDATE pacientes SET edad = COALESCE(?, edad), genero = COALESCE(?, genero), sepsis_origen = COALESCE(?, sepsis_origen), estado_riesgo = COALESCE(?, estado_riesgo) WHERE id = ?`;
         await connection.execute(queryPac, [edad, genero, sepsis, estado, id]);
 
-        const queryGas = `UPDATE gasometrias SET lactato = ? WHERE paciente_id = ?`;
-        await connection.execute(queryGas, [lactato, id]);
+        const queryGas = `UPDATE gasometrias SET lactato = COALESCE(?, lactato), procalcitonina = COALESCE(?, procalcitonina) WHERE paciente_id = ?`;
+        await connection.execute(queryGas, [lactato, procalcitonina !== undefined ? parseFloat(procalcitonina) : null, id]);
 
         await connection.commit();
         return res.json({ message: 'Expediente actualizado correctamente' });

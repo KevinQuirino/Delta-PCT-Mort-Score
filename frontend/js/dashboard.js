@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sheet2.columns = [
                 { header: 'Folio Paciente', key: 'folio', width: 15 },
                 { header: 'Lactato (mmol/L)', key: 'lactato', width: 18 },
+                { header: 'Procalcitonina (ng/mL)', key: 'pct', width: 18 },
                 { header: 'pH Arterial', key: 'ph', width: 12 },
                 { header: 'PaCO2 (mmHg)', key: 'paco2', width: 15 },
                 { header: 'HCO3 (mmol/L)', key: 'hco3', width: 15 },
@@ -103,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sheet2.addRow({
                     folio: p.folio,
                     lactato: p.lactato !== null ? parseFloat(p.lactato) : 'N/D',
+                    pct: p.procalcitonina !== null ? parseFloat(p.procalcitonina) : 'N/D',
                     ph: p.ph_arterial !== null ? parseFloat(p.ph_arterial) : 'N/D',
                     paco2: p.pa_co2 !== null ? parseFloat(p.pa_co2) : 'N/D',
                     hco3: p.hco3 !== null ? parseFloat(p.hco3) : 'N/D',
@@ -204,7 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 genero: document.getElementById('editGenero').value,
                 sepsis: document.getElementById('editSepsis').value,
                 lactato: document.getElementById('editLactato').value,
-                estado: document.getElementById('editEstado').value
+                estado: document.getElementById('editEstado').value,
+                procalcitonina: document.getElementById('editPCT').value
             };
             btn.innerHTML = 'Guardando...';
             btn.disabled = true;
@@ -244,7 +247,7 @@ async function obtenerPacientesDeAPI() {
         renderizarGraficasGlobales(data);
     } catch (error) {
         console.error('Error al descargar base de datos:', error);
-        document.getElementById('patientsTableBody').innerHTML = `<tr><td colspan="9" class="text-danger text-center">Error de conexión de API.</td></tr>`;
+        document.getElementById('patientsTableBody').innerHTML = `<tr><td colspan="10" class="text-danger text-center">Error de conexión de API.</td></tr>`;
         document.getElementById('gasometriasTableBody').innerHTML = `<tr><td colspan="11" class="text-danger text-center">Error de conexión de API.</td></tr>`;
     }
 }
@@ -255,7 +258,7 @@ function renderizarTablaPacientes(data) {
     tbody.innerHTML = '';
 
     if(data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="text-center text-white-50 py-3">No hay pacientes en la tabla 'pacientes'.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="text-center text-white-50 py-3">No hay pacientes en la tabla 'pacientes'.</td></tr>`;
         return;
     }
 
@@ -271,6 +274,7 @@ function renderizarTablaPacientes(data) {
                 <td>${p.genero === 'M' ? 'Masc' : (p.genero === 'F' ? 'Fem' : 'N/E')}</td>
                 <td class="text-white-50 text-truncate" style="max-width: 180px;" title="${p.comorbilidades_detalle}">${p.comorbilidades_detalle || 'Ninguna'}</td>
                 <td>${p.sepsis || 'No'}</td>
+                <td class="text-center">${p.procalcitonina !== null ? parseFloat(p.procalcitonina).toFixed(2) : 'N/D'}</td>
                 <td class="text-center fw-bold">${p.score}</td>
                 <td class="text-center">${badge}</td>
                 <td class="text-end">
@@ -289,12 +293,13 @@ function renderizarTablaGasometrias(data) {
     tbody.innerHTML = '';
 
     if(data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" class="text-center text-white-50 py-3">No hay registros de laboratorio en la tabla 'gasometrias'.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="12" class="text-center text-white-50 py-3">No hay registros de laboratorio en la tabla 'gasometrias'.</td></tr>`;
         return;
     }
 
     data.forEach(p => {
         let lac = p.lactato !== null ? parseFloat(p.lactato).toFixed(1) : 'N/D';
+        let pct = p.procalcitonina !== null ? parseFloat(p.procalcitonina).toFixed(2) : 'N/D';
         let ph = p.ph_arterial !== null ? parseFloat(p.ph_arterial).toFixed(2) : 'N/D';
         let co2 = p.pa_co2 !== null ? parseFloat(p.pa_co2).toFixed(1) : 'N/D';
         let hco3 = p.hco3 !== null ? parseFloat(p.hco3).toFixed(1) : 'N/D';
@@ -308,6 +313,7 @@ function renderizarTablaGasometrias(data) {
             <tr>
                 <td class="text-info fw-bold">${p.folio}</td>
                 <td class="text-center text-white fw-bold">${lac}</td>
+                <td class="text-center">${pct}</td>
                 <td class="text-center">${ph}</td>
                 <td class="text-center">${co2}</td>
                 <td class="text-center">${hco3}</td>
@@ -334,6 +340,7 @@ function editarPaciente(id) {
     document.getElementById('editGenero').value = paciente.genero;
     document.getElementById('editSepsis').value = paciente.sepsis;
     document.getElementById('editLactato').value = paciente.lactato;
+    document.getElementById('editPCT').value = paciente.procalcitonina !== null ? paciente.procalcitonina : '';
     document.getElementById('editEstado').value = paciente.estado;
     document.getElementById('editModal').classList.add('active');
 }

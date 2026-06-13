@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta-PCT | Fase 3: Procalcitonina</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="bg-hud text-white">
+    <div class="hud-grid" aria-hidden="true"></div>
+    <div class="hud-bg-shapes" aria-hidden="true">
+        <svg viewBox="0 0 800 800" width="100%" height="100%">
+            <circle cx="400" cy="400" r="300" fill="none" stroke="rgba(0, 240, 255, 0.15)" stroke-width="1.5" stroke-dasharray="10, 8" />
+            <circle cx="400" cy="400" r="220" fill="none" stroke="rgba(0, 240, 255, 0.1)" stroke-width="1" />
+            <circle cx="400" cy="400" r="100" fill="none" stroke="rgba(0, 240, 255, 0.05)" stroke-width="2" stroke-dasharray="5, 30" />
+            <path d="M400,160 C412,160 420,170 420,185 C420,200 412,210 400,210 C388,210 380,200 380,185 C380,170 388,160 400,160 Z" fill="none" stroke="rgba(0, 240, 255, 0.4)" stroke-width="2" />
+            <path d="M400,210 L400,240 M360,240 L440,240 M400,240 L400,380 M360,240 L330,340 M440,240 L470,340 M400,380 L370,550 M400,380 L430,550" fill="none" stroke="rgba(0, 240, 255, 0.35)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M280,300 L310,300" stroke="rgba(0, 240, 255, 0.3)" stroke-width="1.5" />
+            <circle cx="270" cy="300" r="4" fill="var(--neon-cyan)" />
+            <path d="M520,300 L490,300" stroke="rgba(0, 240, 255, 0.3)" stroke-width="1.5" />
+            <circle cx="530" cy="300" r="4" fill="var(--neon-cyan)" />
+            <path d="M320,500 L350,500" stroke="rgba(0, 240, 255, 0.3)" stroke-width="1.5" />
+            <path d="M480,500 L450,500" stroke="rgba(0, 240, 255, 0.3)" stroke-width="1.5" />
+        </svg>
+    </div>
+
+    <div class="dropdown position-fixed top-0 end-0 m-3 m-md-4" style="z-index: 9999;">
+        <button class="btn btn-outline-hud dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(3,10,22,0.8); backdrop-filter: blur(5px);">
+            <i data-lucide="command" style="width:18px;height:18px;"></i> Sistema
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end glass-card p-2 mt-2">
+            <li>
+                <a class="dropdown-item text-white-50 form-label-hud py-2 hud-item" href="delta1.html">
+                    <i data-lucide="user-plus" class="me-2 text-info" style="width:16px;"></i> Delta-PCT Fase 1
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item text-white-50 form-label-hud py-2 hud-item" href="delta2.html">
+                    <i data-lucide="activity" class="me-2 text-info" style="width:16px;"></i> Delta-PCT Fase 2
+                </a>
+            </li>
+            <li>
+                <hr class="dropdown-divider border-info opacity-25">
+            </li>
+            <li>
+                <a class="dropdown-item text-white-50 form-label-hud py-2 hud-item" href="delta-report.html">
+                    <i data-lucide="database" class="me-2 text-neon-green" style="width:16px;"></i> Pacientes Guardados
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item text-white-50 form-label-hud py-2 hud-item" href="dashboard.html">
+                    <i data-lucide="database" class="me-2 text-neon-green" style="width:16px;"></i> Base de Datos Global
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container py-4">
+        <header class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+            <div>
+                <h1 class="app-title h3 mb-1 d-flex align-items-center gap-2">
+                    <i data-lucide="activity" class="text-info"></i> Delta-PCT / Mort-Score
+                </h1>
+                <span class="subtitle-hud d-flex align-items-center gap-2">
+                    <span class="pulse-indicator"></span> Unidad de Emergencias
+                </span>
+                <div class="mt-2">
+                    <h3 class="app-title h5 mb-0 text-white-50">DELTA 3 - PCT / PROCALCITONINA</h3>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge-status-hud"><i data-lucide="shield-check" class="d-inline-block me-1" style="width:14px;height:14px;"></i> EN LÍNEA</span>
+            </div>
+        </header>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-6">
+                <div class="glass-card p-4 h-100">
+                    <h5 class="form-label-hud text-white mb-4 d-flex align-items-center">
+                        <i data-lucide="shield-alert" class="me-2 text-neon-cyan" style="width:20px;"></i>
+                        Ingreso de Biomarcador (PCT)
+                    </h5>
+
+                    <div class="mb-4">
+                        <label for="pctInput" class="form-label text-white-50">Procalcitonina Sérica (ng/mL)</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-dark text-white-50 font-mono border-secondary">PCT</span>
+                            <input type="number" step="0.01" min="0"
+                                class="form-control text-center font-mono fs-3 fw-bold text-dark bg-white" id="pctInput"
+                                placeholder="0.00" style="border: 2px solid #00f0ff;" required>
+                            <span class="input-group-text bg-dark text-white-50 border-secondary">ng/mL</span>
+                        </div>
+                        <div class="form-text text-white-25 mt-2">Introduce el valor laboratorial cuantitativo para
+                            activar el algoritmo de interpretación.</div>
+                    </div>
+
+                    <div class="p-3 rounded bg-dark-hud border border-secondary mt-4" id="interpretationBox"
+                        style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-white-50 font-mono">ESTRATO DE RIESGO:</span>
+                            <span id="pctBadge" class="badge px-2 py-1 uppercase fw-bold"></span>
+                        </div>
+                        <h6 id="pctTitle" class="fw-bold mb-2"></h6>
+                        <p id="pctDesc" class="small text-white-50 mb-0 justify-text"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="glass-card p-4">
+                    <h5 class="form-label-hud text-white mb-3 d-flex align-items-center">
+                        <i data-lucide="table" class="me-2 text-warning" style="width:20px;"></i>
+                        Escala de Referencia Clínica
+                    </h5>
+                    <div class="table-responsive rounded shadow-sm border border-secondary">
+                        <table class="table table-light table-hover mb-0 text-center align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="py-3">Rango (ng/mL)</th>
+                                    <th class="py-3">Riesgo</th>
+                                    <th class="py-3">Interpretación</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-dark fw-bold">
+                                <tr id="row-normal">
+                                    <td class="font-mono">&lt; 0.10</td>
+                                    <td><span
+                                            class="badge bg-success-subtle text-success border border-success">Normal</span>
+                                    </td>
+                                    <td class="text-start">Sepsis muy improbable</td>
+                                </tr>
+                                <tr id="row-bajo">
+                                    <td class="font-mono">0.10 - 0.25</td>
+                                    <td><span class="badge bg-info-subtle text-info border border-info">Bajo</span></td>
+                                    <td class="text-start">Infección bacteriana poco probable</td>
+                                </tr>
+                                <tr id="row-posible">
+                                    <td class="font-mono">0.25 - 0.50</td>
+                                    <td><span
+                                            class="badge bg-warning-subtle text-warning border border-warning">Indeterminado</span>
+                                    </td>
+                                    <td class="text-start">Posible infección bacteriana temprana (&lt; 6h)</td>
+                                </tr>
+                                <tr id="row-probable">
+                                    <td class="font-mono">0.50 - 2.0</td>
+                                    <td><span class="badge bg-warning text-dark">Probable</span></td>
+                                    <td class="text-start">Sepsis moderada o infección sistémica</td>
+                                </tr>
+                                <tr id="row-alto">
+                                    <td class="font-mono">2.0 - 10.0</td>
+                                    <td><span class="badge bg-danger text-white">Alto Riesgo</span></td>
+                                    <td class="text-start">Alto riesgo de progresar a choque séptico</td>
+                                </tr>
+                                <tr id="row-severo">
+                                    <td class="font-mono">&gt; 10.0</td>
+                                    <td><span class="badge bg-dark text-danger border border-danger">Severo</span></td>
+                                    <td class="text-start">Sepsis grave o choque séptico</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-5 pt-3 border-top border-secondary">
+            <button id="backToPhase2Btn" class="btn btn-outline-hud d-flex align-items-center gap-2">
+                <i data-lucide="arrow-left" style="width:18px;height:18px;"></i> Volver a Gasometría
+            </button>
+            <button id="generateReportBtn" class="btn btn-solid-cyan d-flex align-items-center gap-2 shadow-lg">
+                Generar Reporte Pronóstico <i data-lucide="file-text" style="width:18px;height:18px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/delta3.js"></script>
+</body>
+
+</html>
