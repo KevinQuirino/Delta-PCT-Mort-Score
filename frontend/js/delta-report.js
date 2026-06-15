@@ -350,8 +350,8 @@ async function generarDocumentoBlancoFormal(data, score, lactato, deltaCO2, pafi
                 <div style="width:100%; max-width:720px; margin: 0 auto;">
                     <div style="width:60%; margin: 0 auto; border-top: 1px solid #444; height: 0;"></div>
                     <div style="margin-top:10px; font-weight: 700; font-size: 13px; color: #000;">Dr. Rajiv Joffre Palma</div>
-                    <div style="font-size: 10.5px; color: #444; margin-top:4px;">Médico Tratante / Cirujano y Partero</div>
-                    <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px; color:#777; font-size:10px;">Reporte procesado algorítmicamente mediante metodología de estudios pronósticos. Constituye una herramienta clínica para estimar probabilidades de desenlaces.</div>
+                    <div style="font-size: 10.5px; color: #444; margin-top:4px;">Médico Tratante</div>
+                    <div style="margin-top:14px; border-top:1px solid #eee; padding-top:10px; color:#777; font-size:10px;">Reporte procesado algorítmicamente mediante metodología de estudios pronósticos. Constituye una herramienta clínica para estimar probabilidades de desenlaces. Este reporte es sólo para referencia clínica. No válido como material probatorio.</div>
                 </div>
             </div>
         </div>

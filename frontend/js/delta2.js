@@ -353,7 +353,7 @@ function procesarFase2() {
 
     // Resumen de Fase 1
     html += `<div class="mb-2 d-flex justify-content-between">
-                <span>Puntaje Fase 1:</span>
+                <span>Puntaje Delta 1:</span>
                 <strong class="${scoreFase1 >= 6 ? 'text-danger' : (scoreFase1 >= 3 ? 'text-warning' : 'text-success')}">${scoreFase1} pts</strong>
              </div>`;
 
