@@ -10,11 +10,24 @@ app.use(cors());
 app.use(express.json());
 
 // Pool de conexiones estables a tu base de datos deltapct_db
+/** 
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'admin12345',
     database: 'deltapct_db',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+*/
+// Pool de conexiones estables a tu base de datos usando variables de entorno (.env)
+const pool = mysql.createPool({
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'admin12345',
+    database: process.env.DB_NAME || 'deltapct_db',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
