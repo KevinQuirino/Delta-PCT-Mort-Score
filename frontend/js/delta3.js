@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     backBtn.addEventListener('click', () => {
         guardarDatosTemporales();
         document.body.classList.add('fade-out-page');
-        setTimeout(() => window.location.href = 'delta2.html', 400);
+        setTimeout(() => window.location.href = 'delta-report.html', 400);
     });
 
     nextBtn.addEventListener('click', async () => {

@@ -90,16 +90,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 5. Animación de salida al terminar de guardar
                     document.body.classList.add('fade-out-page');
                     setTimeout(() => {
-                        window.location.href = 'delta3.html';
+                        window.location.href = 'delta-report.html';
                     }, 400);
 
                 } catch (error) {
                     console.error("Error al guardar en MySQL:", error);
-                    mostrarToast("⚠️ Advertencia: No se pudo conectar al servidor de base de datos, pero puede continuar hacia Delta 3.");
+                    mostrarToast("⚠️ Advertencia: No se pudo conectar al servidor de base de datos, pero puede continuar hacia el Reporte.");
 
-                    // Aún si falla el servidor, continuamos hacia Delta 3
+                    // Aún si falla el servidor, continuamos hacia el Reporte
                     setTimeout(() => {
-                        window.location.href = 'delta3.html';
+                        window.location.href = 'delta-report.html';
                     }, 1500);
                 }
             }

@@ -70,9 +70,18 @@ function cargarReporte() {
     document.getElementById('repDeltaCO2').textContent = deltaCO2 !== null ? deltaCO2 : 'N/A';
     document.getElementById('repPafi').textContent = pafi !== null ? pafi : 'N/A';
 
-    const pctValue = data.procalcitonina !== undefined && data.procalcitonina !== null ? parseFloat(data.procalcitonina) : null;
-    document.getElementById('repPCT').textContent = pctValue !== null ? `${pctValue.toFixed(2)} ng/mL` : 'N/A';
-    document.getElementById('repPCTLabel').textContent = pctValue !== null ? (pctValue >= 2 ? 'Alto riesgo séptico' : (pctValue >= 0.5 ? 'Riesgo moderado' : (pctValue >= 0.25 ? 'Indeterminado' : 'Normal'))) : 'Valor clínico consolidado';
+    const pctValue = data.procalcitonina !== undefined && data.procalcitonina !== null && data.procalcitonina !== "" ? parseFloat(data.procalcitonina) : null;
+    document.getElementById('repPCT').textContent = pctValue !== null && !isNaN(pctValue) ? `${pctValue.toFixed(2)} ng/mL` : 'N/A';
+    document.getElementById('repPCTLabel').textContent = pctValue !== null && !isNaN(pctValue) ? (pctValue >= 2 ? 'Alto riesgo séptico' : (pctValue >= 0.5 ? 'Riesgo moderado' : (pctValue >= 0.25 ? 'Indeterminado' : 'Normal'))) : 'Valor clínico consolidado';
+
+    const addPctBtn = document.getElementById('addPctBtn');
+    if (addPctBtn) {
+        if (pctValue !== null && !isNaN(pctValue)) {
+            addPctBtn.innerHTML = '<i data-lucide="edit-2" style="width:14px;height:14px;" class="me-1"></i> Editar PCT Opcional';
+        } else {
+            addPctBtn.innerHTML = '+ Agregar PCT Opcional';
+        }
+    }
 
     redactarHUD(score, lactato, deltaCO2, pafi, data);
     renderizarGraficas(score, lactato, deltaCO2, pafi, data);
