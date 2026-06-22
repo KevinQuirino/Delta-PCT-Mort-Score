@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pacienteId = localStorage.getItem('currentPacienteId');
         if (pacienteId) {
             try {
-                await fetch(`http://localhost:3000/api/pacientes/${pacienteId}`, {
+                await fetch(`/api/pacientes/${pacienteId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -77,31 +77,31 @@ function calcularInterpretacionPCT(val) {
         msgTitle = "Infección bacteriana muy improbable";
         msgDesc = "Los valores se encuentran en rangos fisiológicos estables. Sugiere ausencia de respuesta inflamatoria sistémica de origen bacteriano agudo.";
         rowId = "row-normal";
-    } 
+    }
     else if (val >= 0.10 && val < 0.25) {
         riesgo = "RIESGO BAJO"; claseBadge = "bg-info text-dark";
         msgTitle = "Infección bacteriana poco probable";
         msgDesc = "Valores discretamente elevados. Consistente con infecciones virales localizadas o inflamaciones menores no complicadas de manera sistémica.";
         rowId = "row-bajo";
-    } 
+    }
     else if (val >= 0.25 && val < 0.50) {
         riesgo = "INDETERMINADO"; claseBadge = "bg-warning text-dark";
         msgTitle = "Posible infección bacteriana temprana";
         msgDesc = "Zona gris diagnóstica. Puede representar una fase inicial de infección bacteriana (< 6 horas del evento). Se recomienda estrecha monitorización y repetir prueba entre las próximas 6 y 24 horas.";
         rowId = "row-posible";
-    } 
+    }
     else if (val >= 0.50 && val < 2.00) {
         riesgo = "RIESGO MODERADO"; claseBadge = "bg-warning text-dark";
         msgTitle = "Sospecha de infección sistémica (SIRS)";
         msgDesc = "Elevación significativa compatible con una respuesta sistémica. Alta probabilidad de una infección bacteriana infecciosa en progresión. Requiere atención clínica inmediata.";
         rowId = "row-probable";
-    } 
+    }
     else if (val >= 2.00 && val <= 10.00) {
         riesgo = "ALTO RIESGO"; claseBadge = "bg-danger text-white";
         msgTitle = "Sepsis altamente probable";
         msgDesc = "Valores de alta severidad diagnóstica. Indica un cuadro séptico establecido con un riesgo elevado de evolucionar hacia disfunción multiorgánica aguda.";
         rowId = "row-alto";
-    } 
+    }
     else {
         riesgo = "CRÍTICO SEVERO"; claseBadge = "bg-danger text-white text-blink";
         msgTitle = "Sepsis grave / Choque séptico inminente";

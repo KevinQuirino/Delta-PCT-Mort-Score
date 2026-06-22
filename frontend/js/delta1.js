@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.getElementById('saveBtn');
     const clearBtn = document.getElementById('clearBtn');
     const continueBtn = document.getElementById('continueBtn');
-    
+
     // Modal de limpieza
     const cyberModal = document.getElementById('cyberConfirmModal');
     const confirmCancelBtn = document.getElementById('confirmCancelBtn');
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== EVENT LISTENERS BOTONERA =====
     if (saveBtn) saveBtn.addEventListener('click', guardarDatosFase1);
-    
+
     if (clearBtn) {
         clearBtn.addEventListener('click', () => cyberModal.classList.add('active'));
     }
@@ -50,24 +50,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-// Validación y Redirección a Delta 2 con Transición
+    // Validación y Redirección a Delta 2 con Transición
     if (continueBtn) {
         continueBtn.addEventListener('click', (e) => {
-            e.preventDefault(); 
-            
+            e.preventDefault();
+
             const errorMsg = validarFase1();
-            
+
             if (errorMsg) {
                 mostrarToast(`⚠️ ERROR: ${errorMsg}`);
             } else {
                 guardarDatosFase1();
-                
+
                 // 1. Agregamos la clase de animación de salida al cuerpo de la página
                 document.body.classList.add('fade-out-page');
-                
+
                 // 2. Esperamos 400 milisegundos (lo que dura la animación) para cambiar de página
                 setTimeout(() => {
-                    window.location.href = 'delta2.html'; 
+                    window.location.href = 'delta2.html';
                 }, 400);
             }
         });
@@ -181,7 +181,7 @@ function validarFase1() {
     validarCampo('genero', 'Seleccione el género del paciente.');
     validarCampo('edad', 'Ingrese la edad del paciente.');
     validarCampo('comorbilidades', 'Indique si existen comorbilidades.');
-    
+
     // Validar Comorbilidades detalladas si aplica
     const comorb = document.getElementById('comorbilidades')?.value;
     if (comorb === 'si') {
@@ -191,7 +191,7 @@ function validarFase1() {
     // 4. Revisamos Evaluaciones Clínicas y Signos Vitales
     validarCampo('estadoMental', 'Debe evaluar el Estado Mental del paciente.');
     validarCampo('llenadoCapilar', 'Debe evaluar el Llenado Capilar.');
-    
+
     // Signos Vitales completos
     validarCampo('frecuenciaCardiaca', 'Seleccione el rango de Frecuencia Cardíaca.');
     validarCampo('frecuenciaRespiratoria', 'Seleccione el rango de Frecuencia Respiratoria.');
@@ -202,7 +202,7 @@ function validarFase1() {
 
     // 5. Revisamos Sepsis
     validarCampo('sepsis', 'Indique si existe sospecha de Sepsis.');
-    
+
     // Validar Sepsis detallada si aplica
     const sepsis = document.getElementById('sepsis')?.value;
     if (sepsis === 'si') {
@@ -348,7 +348,7 @@ function guardarDatosFase1() {
     const prevData = JSON.parse(localStorage.getItem('deltaMortScore')) || {};
 
     const data = {
-        ...prevData, 
+        ...prevData,
         genero: document.getElementById('genero')?.value || '',
         edad: document.getElementById('edad')?.value || '',
         comorbilidadesSelect: document.getElementById('comorbilidades')?.value || '',
@@ -381,9 +381,9 @@ function cargarDatosFase1() {
         const data = JSON.parse(raw);
 
         // Llenar campos de Fase 1
-        if(document.getElementById('genero')) document.getElementById('genero').value = data.genero || '';
-        if(document.getElementById('edad')) document.getElementById('edad').value = data.edad || '';
-        if(document.getElementById('comorbilidades')) document.getElementById('comorbilidades').value = data.comorbilidadesSelect || '';
+        if (document.getElementById('genero')) document.getElementById('genero').value = data.genero || '';
+        if (document.getElementById('edad')) document.getElementById('edad').value = data.edad || '';
+        if (document.getElementById('comorbilidades')) document.getElementById('comorbilidades').value = data.comorbilidadesSelect || '';
 
         const contExtra = document.getElementById('comorbilidadesExtra');
         const detalle = document.getElementById('comorbilidadesDetalle');
@@ -397,23 +397,23 @@ function cargarDatosFase1() {
             }
         }
 
-        if(document.getElementById('estadoMental')) document.getElementById('estadoMental').value = data.estadoMental || 'normal';
-        if(document.getElementById('llenado')) document.getElementById('llenado').value = data.llenado || 'normal';
-        if(document.getElementById('frecuenciaCardiaca')) document.getElementById('frecuenciaCardiaca').value = data.frecuenciaCardiaca || 'normal';
-        if(document.getElementById('temperatura')) document.getElementById('temperatura').value = data.temperatura || 'normal';
-        if(document.getElementById('frecuenciaRespiratoria')) document.getElementById('frecuenciaRespiratoria').value = data.frecuenciaRespiratoria || 'normal';
-        if(document.getElementById('satO2')) document.getElementById('satO2').value = data.satO2 || 'normal';
-        if(document.getElementById('sepsis')) document.getElementById('sepsis').value = data.sepsis || 'no';
-        
+        if (document.getElementById('estadoMental')) document.getElementById('estadoMental').value = data.estadoMental || 'normal';
+        if (document.getElementById('llenado')) document.getElementById('llenado').value = data.llenado || 'normal';
+        if (document.getElementById('frecuenciaCardiaca')) document.getElementById('frecuenciaCardiaca').value = data.frecuenciaCardiaca || 'normal';
+        if (document.getElementById('temperatura')) document.getElementById('temperatura').value = data.temperatura || 'normal';
+        if (document.getElementById('frecuenciaRespiratoria')) document.getElementById('frecuenciaRespiratoria').value = data.frecuenciaRespiratoria || 'normal';
+        if (document.getElementById('satO2')) document.getElementById('satO2').value = data.satO2 || 'normal';
+        if (document.getElementById('sepsis')) document.getElementById('sepsis').value = data.sepsis || 'no';
+
         if (document.getElementById('sepsisOrigen')) document.getElementById('sepsisOrigen').value = data.sepsisOrigen || '';
-        
+
         if (document.getElementById('sepsisOrigenContainer') && document.getElementById('sepsis')) {
             if (document.getElementById('sepsis').value === 'si') document.getElementById('sepsisOrigenContainer').classList.remove('d-none');
             else document.getElementById('sepsisOrigenContainer').classList.add('d-none');
         }
 
-        if(document.getElementById('sysBPDelta1')) document.getElementById('sysBPDelta1').value = data.sysBPDelta1 || '';
-        if(document.getElementById('diaBPDelta1')) document.getElementById('diaBPDelta1').value = data.diaBPDelta1 || '';
+        if (document.getElementById('sysBPDelta1')) document.getElementById('sysBPDelta1').value = data.sysBPDelta1 || '';
+        if (document.getElementById('diaBPDelta1')) document.getElementById('diaBPDelta1').value = data.diaBPDelta1 || '';
 
         const lastSaved = document.getElementById('lastSaved');
         if (lastSaved && data.savedAt) lastSaved.textContent = new Date(data.savedAt).toLocaleString();
@@ -445,7 +445,7 @@ function ejecutarLimpieza() {
     const contExtra = document.getElementById('comorbilidadesExtra');
     const sepsisOrigenContainer = document.getElementById('sepsisOrigenContainer');
     const sepsisOrigenSelect = document.getElementById('sepsisOrigen');
-    
+
     if (contExtra) contExtra.classList.add('d-none');
     if (sepsisOrigenContainer) sepsisOrigenContainer.classList.add('d-none');
     if (sepsisOrigenSelect) sepsisOrigenSelect.value = '';

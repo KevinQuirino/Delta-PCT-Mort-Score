@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 4. ENVÍA LOS DATOS A TU SERVIDOR NODE.JS
                     savePhase2Btn.innerHTML = '<i class="pulse-indicator me-2"></i> Guardando en Servidor...';
 
-                    const response = await fetch('http://localhost:3000/api/pacientes', {
+                    const response = await fetch('/api/pacientes', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

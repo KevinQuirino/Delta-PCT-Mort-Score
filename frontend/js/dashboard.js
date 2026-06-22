@@ -1,10 +1,10 @@
 // ==========================================
 // VARIABLES GLOBALES
 // ==========================================
-let pacientesDataGlobal = []; 
+let pacientesDataGlobal = [];
 let chartRiesgo = null;
 let chartEdad = null;
-let chartComorb = null; 
+let chartComorb = null;
 let idAEliminar = null;
 let idAEditar = null;
 
@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     addEventSafe('backToAppBtn', 'click', () => {
+        localStorage.removeItem('deltaMortScore');
         document.body.classList.add('fade-out-page');
         setTimeout(() => window.location.href = 'delta1.html', 400);
     });
@@ -62,10 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 { header: 'Score F1', key: 'score', width: 12 },
                 { header: 'Nivel de Riesgo', key: 'estado', width: 15 }
             ];
-            
+
             // Estilo Encabezado Tabla 1
             sheet1.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
-            sheet1.getRow(1).fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FF005B96'} };
+            sheet1.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF005B96' } };
 
             pacientesDataGlobal.forEach(p => {
                 sheet1.addRow({
@@ -98,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Estilo Encabezado Tabla 2
             sheet2.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
-            sheet2.getRow(1).fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FF008080'} };
+            sheet2.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF008080' } };
 
             pacientesDataGlobal.forEach(p => {
                 sheet2.addRow({
@@ -117,8 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // --- HOJA 3: DASHBOARD GRÁFICO (Fondo Oscuro) ---
-            const sheet3 = workbook.addWorksheet('Dashboard Visual', {views: [{showGridLines: false}]});
-            
+            const sheet3 = workbook.addWorksheet('Dashboard Visual', { views: [{ showGridLines: false }] });
+
             // Pintar todo el fondo de Excel de color azul oscuro para que parezca el sistema web
             for (let r = 1; r <= 40; r++) {
                 for (let c = 1; c <= 20; c++) {
@@ -160,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. Descargar el archivo a la computadora
             const buffer = await workbook.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            saveAs(blob, `BaseDeDatos_DeltaPCT_${new Date().toISOString().slice(0,10)}.xlsx`);
+            saveAs(blob, `BaseDeDatos_DeltaPCT_${new Date().toISOString().slice(0, 10)}.xlsx`);
 
         } catch (error) {
             console.error('Error al generar Excel:', error);
@@ -183,14 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             btn.innerHTML = 'Eliminando...';
             btn.disabled = true;
-            await fetch(`http://localhost:3000/api/pacientes/${idAEliminar}`, { method: 'DELETE' });
+            await fetch(`/api/pacientes/${idAEliminar}`, { method: 'DELETE' });
         } catch (error) {
             console.error('Error al eliminar:', error);
         } finally {
             document.getElementById('deleteModal').classList.remove('active');
             btn.innerHTML = 'Confirmar Eliminación';
             btn.disabled = false;
-            obtenerPacientesDeAPI(); 
+            obtenerPacientesDeAPI();
         }
     });
 
@@ -212,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = 'Guardando...';
             btn.disabled = true;
 
-            await fetch(`http://localhost:3000/api/pacientes/${idAEditar}`, {
+            await fetch(`/api/pacientes/${idAEditar}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -223,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('editModal').classList.remove('active');
             btn.innerHTML = 'Guardar Cambios';
             btn.disabled = false;
-            obtenerPacientesDeAPI(); 
+            obtenerPacientesDeAPI();
         }
     });
 
@@ -236,19 +237,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function obtenerPacientesDeAPI() {
     try {
-        const response = await fetch('http://localhost:3000/api/pacientes');
+        const response = await fetch('/api/pacientes');
         const data = await response.json();
-        
-        pacientesDataGlobal = data; 
-        
+
+        if (!response.ok || !Array.isArray(data)) {
+            throw new Error(data.error || data.message || "Error del servidor al obtener datos");
+        }
+
+        pacientesDataGlobal = data;
+
         actualizarKPIs(data);
-        renderizarTablaPacientes(data);  
-        renderizarTablaGasometrias(data); 
+        renderizarTablaPacientes(data);
+        renderizarTablaGasometrias(data);
         renderizarGraficasGlobales(data);
     } catch (error) {
         console.error('Error al descargar base de datos:', error);
-        document.getElementById('patientsTableBody').innerHTML = `<tr><td colspan="10" class="text-danger text-center">Error de conexión de API.</td></tr>`;
-        document.getElementById('gasometriasTableBody').innerHTML = `<tr><td colspan="11" class="text-danger text-center">Error de conexión de API.</td></tr>`;
+        document.getElementById('patientsTableBody').innerHTML = `<tr><td colspan="10" class="text-danger text-center">Error de conexión con la Base de Datos: ${error.message}</td></tr>`;
+        document.getElementById('gasometriasTableBody').innerHTML = `<tr><td colspan="11" class="text-danger text-center">Error de conexión con la Base de Datos: ${error.message}</td></tr>`;
     }
 }
 
@@ -257,14 +262,14 @@ function renderizarTablaPacientes(data) {
     const tbody = document.getElementById('patientsTableBody');
     tbody.innerHTML = '';
 
-    if(data.length === 0) {
+    if (data.length === 0) {
         tbody.innerHTML = `<tr><td colspan="10" class="text-center text-white-50 py-3">No hay pacientes en la tabla 'pacientes'.</td></tr>`;
         return;
     }
 
     data.forEach(p => {
-        let badge = p.estado === 'Crítico' ? '<span class="badge bg-danger">Crítico</span>' : 
-                    (p.estado === 'Medio' ? '<span class="badge bg-warning text-dark">Medio</span>' : '<span class="badge bg-success">Bajo</span>');
+        let badge = p.estado === 'Crítico' ? '<span class="badge bg-danger">Crítico</span>' :
+            (p.estado === 'Medio' ? '<span class="badge bg-warning text-dark">Medio</span>' : '<span class="badge bg-success">Bajo</span>');
 
         tbody.innerHTML += `
             <tr>
@@ -292,7 +297,7 @@ function renderizarTablaGasometrias(data) {
     const tbody = document.getElementById('gasometriasTableBody');
     tbody.innerHTML = '';
 
-    if(data.length === 0) {
+    if (data.length === 0) {
         tbody.innerHTML = `<tr><td colspan="12" class="text-center text-white-50 py-3">No hay registros de laboratorio en la tabla 'gasometrias'.</td></tr>`;
         return;
     }
@@ -335,7 +340,7 @@ function renderizarTablaGasometrias(data) {
 function editarPaciente(id) {
     const paciente = pacientesDataGlobal.find(p => p.id === id);
     if (!paciente) return;
-    idAEditar = id; 
+    idAEditar = id;
     document.getElementById('editEdad').value = paciente.edad;
     document.getElementById('editGenero').value = paciente.genero;
     document.getElementById('editSepsis').value = paciente.sepsis;
@@ -362,7 +367,7 @@ function renderizarGraficasGlobales(data) {
     const medios = data.filter(p => p.score >= 3 && p.score < 6).length;
     const altos = data.filter(p => p.score >= 6).length;
 
-    if(chartRiesgo) chartRiesgo.destroy();
+    if (chartRiesgo) chartRiesgo.destroy();
     chartRiesgo = new Chart(document.getElementById('globalRiskChart').getContext('2d'), {
         type: 'doughnut',
         data: {
@@ -376,7 +381,7 @@ function renderizarGraficasGlobales(data) {
     const rango2 = data.filter(p => p.edad >= 40 && p.edad <= 65).length;
     const rango3 = data.filter(p => p.edad > 65).length;
 
-    if(chartEdad) chartEdad.destroy();
+    if (chartEdad) chartEdad.destroy();
     chartEdad = new Chart(document.getElementById('globalAgeChart').getContext('2d'), {
         type: 'bar',
         data: {
@@ -401,13 +406,13 @@ function renderizarGraficasGlobales(data) {
     const labelsComorb = Object.keys(conteoPatologias).filter(k => conteoPatologias[k] > 0);
     const dataComorb = labelsComorb.map(k => conteoPatologias[k]);
 
-    if(chartComorb) chartComorb.destroy();
+    if (chartComorb) chartComorb.destroy();
     chartComorb = new Chart(document.getElementById('comorbChart').getContext('2d'), {
-        type: 'polarArea', 
+        type: 'polarArea',
         data: {
             labels: labelsComorb.length > 0 ? labelsComorb : ['Sin datos'],
             datasets: [{ data: dataComorb.length > 0 ? dataComorb : [1], backgroundColor: ['rgba(0, 240, 255, 0.6)', 'rgba(57, 255, 20, 0.6)', 'rgba(255, 159, 0, 0.6)', 'rgba(255, 59, 48, 0.6)', 'rgba(170, 0, 255, 0.6)'], borderColor: '#030a16', borderWidth: 2 }]
         },
-        options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, grid: { color: 'rgba(0, 240, 255, 0.1)' }, angleLines: {color: 'rgba(0, 240, 255, 0.1)'} } }, plugins: { legend: { position: 'right', labels: { color: '#fff', font: { size: 9 } } } } }
+        options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false }, grid: { color: 'rgba(0, 240, 255, 0.1)' }, angleLines: { color: 'rgba(0, 240, 255, 0.1)' } } }, plugins: { legend: { position: 'right', labels: { color: '#fff', font: { size: 9 } } } } }
     });
 }

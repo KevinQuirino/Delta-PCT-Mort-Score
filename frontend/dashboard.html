@@ -103,8 +103,9 @@
 
     <div class="hud-grid" aria-hidden="true"></div>
 
-    <div class="container-fluid py-4 px-md-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="container-fluid py-4 pt-5 mt-3 mt-md-0 px-md-5">
+        <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
             <div>
                 <h1 class="app-title h3 mb-1 text-white d-flex align-items-center gap-2">
                     <i data-lucide="database" class="text-info pulse-indicator border-0" style="width: 24px;"></i> Base
@@ -112,13 +113,16 @@
                 </h1>
                 <span class="subtitle-hud text-info">Centro de Comando Relacional</span>
             </div>
-            <div class="d-flex gap-2">
-                <button id="backToAppBtn" class="btn btn-outline-hud d-flex align-items-center gap-2"><i
+            <div class="d-grid d-md-flex justify-content-md-end gap-2 w-100 w-md-auto">
+                <button id="backToAppBtn"
+                    class="btn btn-outline-hud d-flex align-items-center justify-content-center gap-2"><i
                         data-lucide="home" style="width:18px;height:18px;"></i> Volver</button>
-                <button id="syncDataBtn" class="btn btn-solid-cyan d-flex align-items-center gap-2 shadow-lg"><i
+                <button id="syncDataBtn"
+                    class="btn btn-solid-cyan d-flex align-items-center justify-content-center gap-2 shadow-lg"><i
                         data-lucide="refresh-cw" style="width:18px;height:18px;"></i> Sincronizar</button>
 
-                <button id="exportExcelBtn" class="btn btn-success d-flex align-items-center gap-2 shadow-lg"
+                <button id="exportExcelBtn"
+                    class="btn btn-success d-flex align-items-center justify-content-center gap-2 shadow-lg"
                     style="background: #00b84c; border-color: #00b84c;">
                     <i data-lucide="file-spreadsheet" style="width:18px;height:18px;"></i> Respaldar Excel
                 </button>
@@ -279,18 +283,19 @@
             <i data-lucide="edit" class="text-neon-cyan mb-3" style="width: 40px; height: 40px;"></i>
             <h4 class="text-white mb-4" style="font-family: var(--font-hud);">EDITAR EXPEDIENTE</h4>
             <div class="row text-start g-3 mb-4">
-            <div class="col-6"><label class="form-label-hud">Edad</label><input type="number" id="editEdad"
-                class="form-control form-control-hud"></div>
-            <div class="col-6"><label class="form-label-hud">Género</label><select id="editGenero"
-                class="form-select form-select-hud">
+                <div class="col-6"><label class="form-label-hud">Edad</label><input type="number" id="editEdad"
+                        class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Género</label><select id="editGenero"
+                        class="form-select form-select-hud">
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
                     </select></div>
                 <div class="col-6"><label class="form-label-hud">Sepsis</label><input type="text" id="editSepsis"
                         class="form-control form-control-hud"></div>
-            <div class="col-6"><label class="form-label-hud">Lactato</label><input type="number" step="0.1"
-                id="editLactato" class="form-control form-control-hud"></div>
-            <div class="col-6"><label class="form-label-hud">Procalcitonina (ng/mL)</label><input type="number" step="0.01" id="editPCT" class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Lactato</label><input type="number" step="0.1"
+                        id="editLactato" class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Procalcitonina (ng/mL)</label><input type="number"
+                        step="0.01" id="editPCT" class="form-control form-control-hud"></div>
                 <div class="col-12"><label class="form-label-hud">Estado Riesgo</label><select id="editEstado"
                         class="form-select form-select-hud">
                         <option value="Bajo">Bajo</option>
