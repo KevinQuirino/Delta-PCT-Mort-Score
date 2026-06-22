@@ -228,7 +228,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    obtenerPacientesDeAPI();
+    // Lógica de Autenticación
+    const authModal = document.getElementById('authModal');
+    const authPassword = document.getElementById('authPassword');
+    const confirmAuthBtn = document.getElementById('confirmAuthBtn');
+    const cancelAuthBtn = document.getElementById('cancelAuthBtn');
+
+    if (authModal) {
+        document.body.style.overflow = 'hidden';
+
+        const verificarPassword = () => {
+            if (authPassword.value === 'admin12345') {
+                authModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                obtenerPacientesDeAPI();
+            } else {
+                authPassword.classList.add('border-danger');
+                authPassword.value = '';
+                authPassword.placeholder = 'Contraseña incorrecta';
+                setTimeout(() => authPassword.classList.remove('border-danger'), 1500);
+            }
+        };
+
+        if (confirmAuthBtn) confirmAuthBtn.addEventListener('click', verificarPassword);
+        if (authPassword) {
+            authPassword.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') verificarPassword();
+            });
+        }
+
+        if (cancelAuthBtn) {
+            cancelAuthBtn.addEventListener('click', () => {
+                window.location.href = 'delta1.html';
+            });
+        }
+    } else {
+        obtenerPacientesDeAPI();
+    }
 });
 
 // ==========================================

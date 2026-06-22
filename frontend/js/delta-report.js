@@ -18,6 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const newPatientBtn = document.getElementById('newPatientBtn');
+    if (newPatientBtn) {
+        newPatientBtn.addEventListener('click', () => {
+            localStorage.removeItem('deltaMortScore');
+            document.body.classList.add('fade-out-page');
+            setTimeout(() => window.location.href = 'delta1.html', 400);
+        });
+    }
+
     // Configuración global de Chart.js y registro del plugin DataLabels
     Chart.register(ChartDataLabels);
     Chart.defaults.color = 'rgba(255, 255, 255, 0.6)';
