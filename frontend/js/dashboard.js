@@ -203,13 +203,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('confirmEditBtn');
         try {
             const payload = {
+                folio: document.getElementById('editFolio').value,
+                fecha: document.getElementById('editFecha').value,
                 edad: document.getElementById('editEdad').value,
                 genero: document.getElementById('editGenero').value,
-                sepsis: document.getElementById('editSepsis').value,
-                lactato: document.getElementById('editLactato').value,
                 estado: document.getElementById('editEstado').value,
-                procalcitonina: document.getElementById('editPCT').value
+                comorbilidades_detalle: document.getElementById('editComorb').value,
+                sepsis: document.getElementById('editSepsis').value,
+                procalcitonina: document.getElementById('editPCT').value,
+                lactato: document.getElementById('editLactato').value,
+                ph_arterial: document.getElementById('editPH').value,
+                pa_co2: document.getElementById('editPaCO2').value,
+                hco3: document.getElementById('editHCO3').value,
+                pa_o2: document.getElementById('editPaO2').value,
+                pv_co2: document.getElementById('editPvCO2').value,
+                fi_o2: document.getElementById('editFiO2').value,
+                delta_co2: document.getElementById('editDeltaCO2').value,
+                pafi: document.getElementById('editPAFI').value
             };
+            
+            // Clean empty string to null for numbers if needed, or backend might handle it
+            Object.keys(payload).forEach(k => {
+                if(payload[k] === '') payload[k] = null;
+            });
+
             btn.innerHTML = 'Guardando...';
             btn.disabled = true;
 
@@ -377,12 +394,38 @@ function editarPaciente(id) {
     const paciente = pacientesDataGlobal.find(p => p.id === id);
     if (!paciente) return;
     idAEditar = id;
-    document.getElementById('editEdad').value = paciente.edad;
-    document.getElementById('editGenero').value = paciente.genero;
-    document.getElementById('editSepsis').value = paciente.sepsis;
-    document.getElementById('editLactato').value = paciente.lactato;
+    
+    document.getElementById('editFolio').value = paciente.folio || '';
+    
+    // Parse Date for input[type=date]
+    let fecha = paciente.fecha || '';
+    if (fecha.includes('/')) {
+        const parts = fecha.split('/'); // Asumiendo DD/MM/YYYY
+        if (parts.length === 3) {
+            fecha = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+    } else if (fecha.length >= 10) {
+        fecha = fecha.substring(0, 10);
+    }
+    document.getElementById('editFecha').value = fecha;
+
+    document.getElementById('editEdad').value = paciente.edad !== null ? paciente.edad : '';
+    document.getElementById('editGenero').value = paciente.genero || 'M';
+    document.getElementById('editEstado').value = paciente.estado || 'Bajo';
+    document.getElementById('editComorb').value = paciente.comorbilidades_detalle || '';
+    document.getElementById('editSepsis').value = paciente.sepsis || '';
     document.getElementById('editPCT').value = paciente.procalcitonina !== null ? paciente.procalcitonina : '';
-    document.getElementById('editEstado').value = paciente.estado;
+    
+    document.getElementById('editLactato').value = paciente.lactato !== null ? paciente.lactato : '';
+    document.getElementById('editPH').value = paciente.ph_arterial !== null ? paciente.ph_arterial : '';
+    document.getElementById('editPaCO2').value = paciente.pa_co2 !== null ? paciente.pa_co2 : '';
+    document.getElementById('editHCO3').value = paciente.hco3 !== null ? paciente.hco3 : '';
+    document.getElementById('editPaO2').value = paciente.pa_o2 !== null ? paciente.pa_o2 : '';
+    document.getElementById('editPvCO2').value = paciente.pv_co2 !== null ? paciente.pv_co2 : '';
+    document.getElementById('editFiO2').value = paciente.fi_o2 !== null ? paciente.fi_o2 : '';
+    document.getElementById('editDeltaCO2').value = paciente.delta_co2 !== null ? paciente.delta_co2 : '';
+    document.getElementById('editPAFI').value = paciente.pafi !== null ? paciente.pafi : '';
+
     document.getElementById('editModal').classList.add('active');
 }
 

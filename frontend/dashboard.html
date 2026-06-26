@@ -292,29 +292,43 @@
     </div>
 
     <div class="cyber-modal-overlay" id="editModal">
-        <div class="cyber-modal" style="max-width: 500px;">
+        <div class="cyber-modal" style="max-width: 700px;">
             <i data-lucide="edit" class="text-neon-cyan mb-3" style="width: 40px; height: 40px;"></i>
             <h4 class="text-white mb-4" style="font-family: var(--font-hud);">EDITAR EXPEDIENTE</h4>
-            <div class="row text-start g-3 mb-4">
-                <div class="col-6"><label class="form-label-hud">Edad</label><input type="number" id="editEdad"
-                        class="form-control form-control-hud"></div>
-                <div class="col-6"><label class="form-label-hud">Género</label><select id="editGenero"
-                        class="form-select form-select-hud">
+            <div class="row text-start g-3 mb-4" style="max-height: 60vh; overflow-y: auto; overflow-x: hidden; padding-right: 10px;">
+                <div class="col-6"><label class="form-label-hud">Folio</label><input type="text" id="editFolio" class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Fecha Ingreso</label><input type="date" id="editFecha" class="form-control form-control-hud"></div>
+                
+                <div class="col-4"><label class="form-label-hud">Edad</label><input type="number" id="editEdad" class="form-control form-control-hud"></div>
+                <div class="col-4"><label class="form-label-hud">Género</label><select id="editGenero" class="form-select form-select-hud">
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
                     </select></div>
-                <div class="col-6"><label class="form-label-hud">Sepsis</label><input type="text" id="editSepsis"
-                        class="form-control form-control-hud"></div>
-                <div class="col-6"><label class="form-label-hud">Lactato</label><input type="number" step="0.1"
-                        id="editLactato" class="form-control form-control-hud"></div>
-                <div class="col-6"><label class="form-label-hud">Procalcitonina (ng/mL)</label><input type="number"
-                        step="0.01" id="editPCT" class="form-control form-control-hud"></div>
-                <div class="col-12"><label class="form-label-hud">Estado Riesgo</label><select id="editEstado"
-                        class="form-select form-select-hud">
+                <div class="col-4"><label class="form-label-hud">Estado Riesgo</label><select id="editEstado" class="form-select form-select-hud">
                         <option value="Bajo">Bajo</option>
                         <option value="Medio">Medio</option>
                         <option value="Crítico">Crítico</option>
                     </select></div>
+
+                <div class="col-12"><label class="form-label-hud">Patologías Declaradas</label><input type="text" id="editComorb" class="form-control form-control-hud"></div>
+                
+                <div class="col-6"><label class="form-label-hud">Foco Séptico</label><input type="text" id="editSepsis" class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Procalcitonina (ng/mL)</label><input type="number" step="0.01" id="editPCT" class="form-control form-control-hud"></div>
+
+                <div class="col-12 mt-4"><h6 class="text-info border-bottom border-info pb-2 m-0"><i data-lucide="droplet" class="me-2" style="width:16px;"></i>Parámetros de Gasometría</h6></div>
+                
+                <div class="col-4"><label class="form-label-hud">Lactato</label><input type="number" step="0.1" id="editLactato" class="form-control form-control-hud"></div>
+                <div class="col-4"><label class="form-label-hud">pH Arterial</label><input type="number" step="0.01" id="editPH" class="form-control form-control-hud"></div>
+                <div class="col-4"><label class="form-label-hud">PaCO₂</label><input type="number" step="0.1" id="editPaCO2" class="form-control form-control-hud"></div>
+                
+                <div class="col-4"><label class="form-label-hud">HCO₃</label><input type="number" step="0.1" id="editHCO3" class="form-control form-control-hud"></div>
+                <div class="col-4"><label class="form-label-hud">PaO₂</label><input type="number" step="0.1" id="editPaO2" class="form-control form-control-hud"></div>
+                <div class="col-4"><label class="form-label-hud">PvCO₂</label><input type="number" step="0.1" id="editPvCO2" class="form-control form-control-hud"></div>
+                
+                <div class="col-6"><label class="form-label-hud">FiO₂ (%)</label><input type="number" step="0.1" id="editFiO2" class="form-control form-control-hud"></div>
+                <div class="col-6"><label class="form-label-hud">Δ pCO₂</label><input type="number" step="0.1" id="editDeltaCO2" class="form-control form-control-hud"></div>
+                
+                <div class="col-12"><label class="form-label-hud">Índice Kirby (PAFI)</label><input type="number" step="0.1" id="editPAFI" class="form-control form-control-hud"></div>
             </div>
             <div class="d-flex gap-2 justify-content-center">
                 <button class="btn btn-outline-hud" id="cancelEditBtn">Cancelar</button>
