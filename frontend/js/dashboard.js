@@ -11,6 +11,11 @@ let idAEditar = null;
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
+    // Eliminar la animación del body para que position: fixed funcione correctamente
+    setTimeout(() => {
+        document.body.style.animation = 'none';
+    }, 600);
+
     const addEventSafe = (id, eventType, callback) => {
         const element = document.getElementById(id);
         if (element) element.addEventListener(eventType, callback);
